@@ -1,19 +1,43 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Sidebar from './components/sidebar';
-import DocsPage from './components/docspage';
+import './App.css'; // Import your CSS styles
+import TableOfContents from './components/tableofcontents';
 
-function App() {
+const App: React.FC = () => {
+  const headings = [
+    { id: 'introduction', text: 'Introduction' },
+    { id: 'setup', text: 'Setup' },
+    { id: 'usage', text: 'Usage' },
+    { id: 'conclusion', text: 'Conclusion' },
+  ];
+
   return (
-    <Router>
-      <div className="app">
-        <Sidebar />
-        <Routes>
-          <Route path="/docs/:docId" element={<DocsPage />} />
-        </Routes>
+    <div className="app-container">
+      <header className="app-header">
+        <h1>Documentation</h1>
+      </header>
+      <div className="content">
+        <TableOfContents headings={headings} />
+        <main>
+          <section id="introduction">
+            <h2>Introduction</h2>
+            <p>Welcome to the documentation. This section introduces the project.</p>
+          </section>
+          <section id="setup">
+            <h2>Setup</h2>
+            <p>Follow these steps to set up the project...</p>
+          </section>
+          <section id="usage">
+            <h2>Usage</h2>
+            <p>Learn how to use the application...</p>
+          </section>
+          <section id="conclusion">
+            <h2>Conclusion</h2>
+            <p>Wrap up and further resources...</p>
+          </section>
+        </main>
       </div>
-    </Router>
+    </div>
   );
-}
+};
 
 export default App;

@@ -1,28 +1,39 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import React from 'react';
 import ReactMarkdown from 'react-markdown';
-import axios from 'axios';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { solarizedlight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
-const DocsPage: React.FC = () => {
-  const { docId } = useParams<{ docId: string }>();
-  const [content, setContent] = useState<string>("");
 
-  useEffect(() => {
-    const loadMarkdown = async () => {
-      try {
-        const response = await axios.get(`/docs/${docId}.md`);
-        setContent(response.data);
-      } catch (error) {
-        setContent("Documentation not found.");
-      }
-    };
+interface DocsPageProps {
+  content: string; // Expecting content to be passed as a prop
+}
 
-    loadMarkdown();
-  }, [docId]);
-
+const DocsPage: React.FC<DocsPageProps> = ({ content }) => {
   return (
-    <div className="docs-content">
-      <ReactMarkdown>{content}</ReactMarkdown>
+    <div className="docs-page">
+      <ReactMarkdown
+        components={{
+          code({ node, inline, className, children, ...props }) {
+            const match = /language-(\w+)/.exec(className || '');
+            return !inline && match ? (
+              <SyntaxHighlighter
+                language={match[1]}
+                style={solarizedlight} // You can change this style
+                PreTag="div"
+                {...props}
+              >
+                {String(children).replace(/\n$/, '')}
+              </SyntaxHighlighter>
+            ) : (
+              <code className={className} {...props}>
+                {children}
+              </code>
+            );
+          },
+        }}
+      >
+        {content}
+      </ReactMarkdown>
     </div>
   );
 };
